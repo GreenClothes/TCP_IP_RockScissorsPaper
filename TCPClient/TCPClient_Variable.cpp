@@ -1,6 +1,6 @@
 #include "Common.h"
 
-char *SERVERIP = (char *)"127.0.0.1";
+char *SERVERIP = (char *)"(SERVERIP)";
 #define SERVERPORT 9000
 #define BUFSIZE    50
 
