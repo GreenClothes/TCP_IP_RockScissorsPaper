@@ -1,0 +1,6 @@
+C:\Users\kkb99\Desktop\인터넷프로토콜설계\socket\TCPServer+Client_Data transmission\TCPServer_Variable\x64\Debug\TCPServer_Variable.exe
+C:\Users\kkb99\Desktop\인터넷프로토콜설계\socket\TCPServer+Client_Data transmission\TCPServer_Variable\x64\Debug\TCPServer_Variable.pdb
+C:\Users\jaeng\OneDrive\바탕 화면\TCPServer_Variable\x64\Debug\TCPServer_Variable.exe
+C:\Users\kkb99\Desktop\인터넷프로토콜설계\term_prj\TCPServer_Variable (2)\TCPServer_Variable\x64\Debug\TCPServer_Variable.exe
+C:\Users\kkb99\Desktop\인터넷프로토콜설계\term_prj\TCPServer_Variable (2)\TCPServer_Variable\x64\Debug\TCPServer_Variable.pdb
+C:\Users\jaeng\OneDrive\문서\카카오톡 받은 파일\TCPServer_Variable(7)\x64\Debug\TCPServer_Variable.exe

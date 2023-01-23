@@ -1,0 +1,6 @@
+C:\Users\kkb99\Desktop\인터넷프로토콜설계\socket\TCPServer+Client_Data transmission\TCPClient_Variable\x64\Debug\TCPClient_Variable.exe
+C:\Users\kkb99\Desktop\인터넷프로토콜설계\socket\TCPServer+Client_Data transmission\TCPClient_Variable\x64\Debug\TCPClient_Variable.pdb
+C:\Users\jaeng\OneDrive\바탕 화면\TCPClient_Variable\x64\Debug\TCPClient_Variable.exe
+C:\Users\kkb99\Desktop\인터넷프로토콜설계\term_prj\TCPClient_Variable (2)\TCPClient_Variable\x64\Debug\TCPClient_Variable.exe
+C:\Users\kkb99\Desktop\인터넷프로토콜설계\term_prj\TCPClient_Variable (2)\TCPClient_Variable\x64\Debug\TCPClient_Variable.pdb
+C:\Users\jaeng\OneDrive\문서\카카오톡 받은 파일\TCPClient_Variable(7)\x64\Debug\TCPClient_Variable.exe
