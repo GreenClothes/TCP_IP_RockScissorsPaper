@@ -1,16 +1,15 @@
 #include "Common.h"
 
-char *SERVERIP = (char *)"(SERVERIP)";
+char *SERVERIP = (char *)"192.168.0.17";
 #define SERVERPORT 9000
 #define BUFSIZE    50
 
 enum { NO_WIN = 0, FIRST_WIN = 1, SECOND_WIN = 2 };
 enum { GAWI = 0, BAWI = 1, BO = 2 };
 
-// 게임 시작 단계 확인 변수
 int error = 0;
 
-// 패킷 구조
+// packet struct
 #pragma pack(1)
 typedef struct _PACKET
 {
@@ -23,7 +22,7 @@ typedef struct _PACKET
 #pragma pack()
 
 // Internet Inference
-// 사용자 정의 데이터 수신 함수
+// user defined data receiving function
 int recvn(SOCKET s, char* buf, int len, int flags)
 {
 	int received;
@@ -47,15 +46,15 @@ int main(int argc, char *argv[])
 {
 	int retval;
 
-	// 명령행 인수가 있으면 IP 주소로 사용
+	// use command line argument as IP address
 	if (argc > 1) SERVERIP = argv[1];
 
-	// 윈속 초기화
+	// initialize winsock
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
 
-	// 소켓 생성
+	// create socket
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
@@ -79,7 +78,7 @@ int main(int argc, char *argv[])
 	PACKET rs_PACKET1;
 	PACKET* rs_PACKET2;
 
-	// 게임 시작 요청
+	// request for starting game
 	send_packet.option = 1;
 
 	retval = send(sock, (char*)&send_packet, sizeof(send_packet), 0);
@@ -88,7 +87,7 @@ int main(int argc, char *argv[])
 		error = 1;
 	}
 
-	// 게임 시작 요청 승인 수신
+	// receive acceptance of request for starting game
 	retval = recv(sock, (char*)&rs_PACKET1, sizeof(PACKET), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
@@ -97,12 +96,12 @@ int main(int argc, char *argv[])
 
 	rs_PACKET2 = (PACKET*)&rs_PACKET1;
 
-	// 승인되지 않으면 연결 X
+	// if not accepted, can not connect
 	if (rs_PACKET2->option != 1) {
 		error = 1;
 	}
 
-	// 서버와 데이터 통신
+	// communication with server
 	while (error == 0) {
 		int gbb;
 		printf("가위 바위 보, 묵찌빠 게임!!\n");
@@ -130,14 +129,14 @@ int main(int argc, char *argv[])
 		send_packet.size = sizeof(int);
 		send_packet.totalsize = sizeof(int) * 3;
 
-		// 데이터 보내기
+		// send data
 		retval = send(sock, (char*)&send_packet, sizeof(send_packet), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("send()");
 			break;
 		}
 
-		// 데이터 받기
+		// receive data
 		retval = recv(sock, (char*)&rs_PACKET1, sizeof(PACKET), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("recv()");
@@ -146,7 +145,7 @@ int main(int argc, char *argv[])
 
 		rs_PACKET2 = (PACKET*)&rs_PACKET1;
 
-		// 결과 출력
+		// print result
 		if (rs_PACKET2->option == 0 || rs_PACKET2->option == 4) {
 			printf("%s\n", rs_PACKET2->data);
 			option_cache = rs_PACKET2->option;
@@ -161,10 +160,13 @@ int main(int argc, char *argv[])
 
 	}
 
-	// 소켓 닫기
+	// close socket
 	closesocket(sock);
 
-	// 윈속 종료
+	// quit winsock
 	WSACleanup();
+	char ch;
+	printf("게임이 종료되었습니다...\n(Press Enter to closing...)\n");
+	std::cin.get(ch);
 	return 0;
 }

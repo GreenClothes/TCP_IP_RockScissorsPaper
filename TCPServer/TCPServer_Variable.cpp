@@ -6,12 +6,12 @@
 enum { NO_WIN = 0, FIRST_WIN = 1, SECOND_WIN = 2 };
 enum { GAWI = 0, BAWI = 1, BO = 2 };
 
-const char* Result_Msg[] = { "ºñ°å½À´Ï´Ù!", "°ø°Ý!", "¼öºñ!" };
-const char* Result_Msg1[] = { "ºñ°å", "ÀÌ°å½À´Ï´Ù!", "Á³½À´Ï´Ù!" };
-const char* Result_Msg2[] = { "ºñ°å", "Á³½À´Ï´Ù!", "ÀÌ°å½À´Ï´Ù!" };
-const char* END_Msg[] = { "Á¾·áÇß½À´Ï´Ù!" };
+const char* Result_Msg[] = { "ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!", "ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½!" };
+const char* Result_Msg1[] = { "ï¿½ï¿½ï¿½", "ï¿½Ì°ï¿½ï¿½ï¿½Ï´ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!" };
+const char* Result_Msg2[] = { "ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!", "ï¿½Ì°ï¿½ï¿½ï¿½Ï´ï¿½!" };
+const char* END_Msg[] = { "ï¿½ï¿½ï¿½ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½!" };
 const char* winner[] = { " ", "client1", "client0" };
-const char* Res_Msg[] = { "°ÔÀÓ ¹«È¿! "};
+const char* Res_Msg[] = { "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¿! "};
 
 float score_0 = 0;
 float score_1 = 0;
@@ -20,17 +20,17 @@ int who;
 int gbb_cnt = 0;
 int MJB_cnt = 0;
 
-// °ÔÀÓ ½ÃÀÛ ´Ü°è È®ÀÎ º¯¼ö
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 int error = 0;
 
-// ÆÐÅ¶ ±¸Á¶
+// ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½
 #pragma pack(1)
 typedef struct _PACKET
 {
 	int size;
 	int totalsize;
 	// option
-	// 1 : °ÔÀÓ ½ÃÀÛ, 2 : ½Â·ü, 3 : °ÔÀÓ Á¾·á
+	// 1 : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, 2 : ï¿½Â·ï¿½, 3 : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	int option;
 	int gbb;
 	char data[15];
@@ -67,7 +67,7 @@ int MJB(int part1, int part2, int who_atk)
 	}
 }
 
-// ³»ºÎ ±¸Çö¿ë ÇÔ¼ö
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
 int _recv_ahead(SOCKET s, char *p)
 {
 	__declspec(thread) static int nbytes = 0;
@@ -89,7 +89,7 @@ int _recv_ahead(SOCKET s, char *p)
 	return 1;
 }
 
-// »ç¿ëÀÚ Á¤ÀÇ µ¥ÀÌÅÍ ¼ö½Å ÇÔ¼ö
+// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
 int recvn(SOCKET s, char* buf, int len, int flags)
 {
 	int received;
@@ -113,12 +113,12 @@ int main(int argc, char *argv[])
 {
 	int retval;
 
-	// À©¼Ó ÃÊ±âÈ­
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
 
-	// ¼ÒÄÏ »ý¼º
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (listen_sock == INVALID_SOCKET) err_quit("socket()");
 
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR) err_quit("listen()");
 
-	// µ¥ÀÌÅÍ Åë½Å¿¡ »ç¿ëÇÒ º¯¼ö
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	SOCKET client_sock[2];
 	SOCKADDR_IN clientaddr[2];
 	int addrlen;
@@ -143,8 +143,6 @@ int main(int argc, char *argv[])
 	PACKET send_packet;
 	PACKET cli0_packet_cache;
 	PACKET cli1_packet_cache;
-	//PACKET* cli0_packet = new PACKET();
-	//PACKET* cli1_packet = new PACKET();
 	PACKET* cli0_packet;
 	PACKET* cli1_packet;
 
@@ -158,10 +156,10 @@ int main(int argc, char *argv[])
 			break;
 		}
 
-		// Á¢¼ÓÇÑ Å¬¶óÀÌ¾ðÆ® Á¤º¸ Ãâ·Â
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		char addr[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &clientaddr[0].sin_addr, addr, sizeof(addr));
-		printf("\n[TCP ¼­¹ö] Å¬¶óÀÌ¾ðÆ® Á¢¼Ó: IP ÁÖ¼Ò=%s, Æ÷Æ® ¹øÈ£=%d\n",
+		printf("\n[TCP ï¿½ï¿½ï¿½ï¿½] Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½: IP ï¿½Ö¼ï¿½=%s, ï¿½ï¿½Æ® ï¿½ï¿½È£=%d\n",
 			addr, ntohs(clientaddr[0].sin_port));
 
 		// client 1
@@ -173,12 +171,12 @@ int main(int argc, char *argv[])
 			break;
 		}
 
-		// Á¢¼ÓÇÑ Å¬¶óÀÌ¾ðÆ® Á¤º¸ Ãâ·Â
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		inet_ntop(AF_INET, &clientaddr[1].sin_addr, addr, sizeof(addr));
-		printf("\n[TCP ¼­¹ö] Å¬¶óÀÌ¾ðÆ® Á¢¼Ó: IP ÁÖ¼Ò=%s, Æ÷Æ® ¹øÈ£=%d\n",
+		printf("\n[TCP ï¿½ï¿½ï¿½ï¿½] Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½: IP ï¿½Ö¼ï¿½=%s, ï¿½ï¿½Æ® ï¿½ï¿½È£=%d\n",
 			addr, ntohs(clientaddr[1].sin_port));
 
-		// °ÔÀÓ ½ÃÀÛ ¿äÃ» È®ÀÎ
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» È®ï¿½ï¿½
 		retval = recv(client_sock[0], (char*)&cli0_packet_cache, sizeof(PACKET), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("recv()");
@@ -193,7 +191,7 @@ int main(int argc, char *argv[])
 		}
 		cli1_packet = (PACKET*)&cli1_packet_cache;
 
-		// ¿É¼ÇÀÌ 1ÀÌ¸é °ÔÀÓ ½ÃÀÛ ¿äÃ» ½ÂÀÎ
+		// ï¿½É¼ï¿½ï¿½ï¿½ 1ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½
 		if((cli0_packet->option == 1) && (cli1_packet->option == 1)){
 			send_packet.size = 0;
 			send_packet.size = sizeof(int) * 3 + send_packet.size;
@@ -205,7 +203,7 @@ int main(int argc, char *argv[])
 				error = 1;
 			}
 
-			// ½ÂÀÎµÇ¾úÀ½À» ¾Ë¸²
+			// ï¿½ï¿½ï¿½ÎµÇ¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¸ï¿½
 			send_packet.size = 0;
 			send_packet.size = sizeof(int) * 3 + send_packet.size;
 			send_packet.option = 1;
@@ -216,14 +214,14 @@ int main(int argc, char *argv[])
 				error = 1;
 			}
 		}
-		// ÇÏ³ª¶óµµ ¿É¼ÇÀÌ 1ÀÌ ¾Æ´Ï¸é Åë½Å Á¾·á
+		// ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		else {
 			error = 1;
 		}
 
-		// Å¬¶óÀÌ¾ðÆ®¿Í µ¥ÀÌÅÍ Åë½Å
+		// Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		while (error == 0) {
-			// Å¬¶óÀÌ¾ðÆ® 0 µ¥ÀÌÅÍ ¼ö½Å
+			// Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® 0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			retval = recv(client_sock[0], (char*)&cli0_packet_cache, sizeof(PACKET), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
@@ -231,7 +229,7 @@ int main(int argc, char *argv[])
 			}
 			cli0_packet = (PACKET*)&cli0_packet_cache;
 
-			// Å¬¶óÀÌ¾ðÆ® 1 µ¥ÀÌÅÍ ¼ö½Å
+			// Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® 1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			retval = recv(client_sock[1], (char*)&cli1_packet_cache, sizeof(PACKET), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
@@ -240,7 +238,7 @@ int main(int argc, char *argv[])
 			cli1_packet = (PACKET*)&cli1_packet_cache;
 
 			//////////////////
-			// ½Â·ü °è»ê
+			// ï¿½Â·ï¿½ ï¿½ï¿½ï¿½
 			float a;
 			float b;
 			char win_rate[10];
@@ -263,7 +261,7 @@ int main(int argc, char *argv[])
 			}
 
 			/////////////////////////
-			// ½Â·ü Àü¼Û option == 2
+			// ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½ option == 2
 			while(cli0_packet->option == 2) {
 				sprintf(win_rate, "%.2f", a);
 				int size = strlen((char*)&win_rate);
@@ -281,7 +279,7 @@ int main(int argc, char *argv[])
 					break;
 				}
 
-				// Àç¼ö½Å
+				// ï¿½ï¿½ï¿½ï¿½ï¿½
 				retval = recv(client_sock[0], (char*)&cli0_packet_cache, sizeof(PACKET), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
@@ -306,7 +304,7 @@ int main(int argc, char *argv[])
 					break;
 				}
 
-				//Àç¼ö½Å
+				//ï¿½ï¿½ï¿½ï¿½ï¿½
 				retval = recv(client_sock[1], (char*)&cli1_packet_cache, sizeof(PACKET), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
@@ -316,7 +314,7 @@ int main(int argc, char *argv[])
 			}
 
 			//////////////////////////////////////
-			//cli0 or cli1 Á¾·á ¸í·É option == 3
+			//cli0 or cli1 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ option == 3
 			if (cli0_packet->option == 3 || cli1_packet->option == 3) {
 				sprintf(win_rate, "%.2f", a);
 				int size = strlen((char*)&win_rate);
@@ -351,12 +349,12 @@ int main(int argc, char *argv[])
 			}
 
 			/////////////////////////////
-			// °¡À§¹ÙÀ§º¸ °ÔÀÓ option == 0
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ option == 0
 			if(cli0_packet->option == 0 && cli1_packet->option == 0){
 				int size = strlen(Result_Msg[who_win(cli0_packet->gbb, cli1_packet->gbb)]);
 				int totalsize = sizeof(int) * 3 + cli0_packet->size;
 				
-				// °¡À§¹ÙÀ§º¸ °á°ú¿¡ µû¶ó option °áÁ¤
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ option ï¿½ï¿½ï¿½ï¿½
 				if (who_win(cli0_packet->gbb, cli1_packet->gbb) == 0) {
 					send_packet.option = 0;
 					gbb_cnt++;
@@ -390,12 +388,12 @@ int main(int argc, char *argv[])
 						break;
 					}
 				}
-				// °¡À§¹ÙÀ§º¸ 5È¸ ¼öÇà
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 5È¸ ï¿½ï¿½ï¿½ï¿½
 				else {
 					int size1 = strlen(Res_Msg[0]);
 					int totalsize1 = sizeof(int) * 3 + size1;
 
-					// ¿¹¿Ü Ã³¸®¿¡ µû¸¥ client 0 option 0 Àü¼Û
+					// ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ client 0 option 0 ï¿½ï¿½ï¿½ï¿½
 					send_packet.option = 0;
 					send_packet.totalsize = totalsize1;
 					send_packet.size = size1;
@@ -410,7 +408,7 @@ int main(int argc, char *argv[])
 					size1 = strlen(Res_Msg[0]);
 					totalsize1 = sizeof(int) * 3 + size1;
 
-					// ¿¹¿Ü Ã³¸®¿¡ µû¸¥ client1 option 0 Àü¼Û
+					// ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ client1 option 0 ï¿½ï¿½ï¿½ï¿½
 					send_packet.option = 0;
 					send_packet.totalsize = totalsize1;
 					send_packet.size = size1;
@@ -425,7 +423,7 @@ int main(int argc, char *argv[])
 			}
 
 			/////////////////////////////
-			// ¹¬Âîºü °ÔÀÓ option == 4
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ option == 4
 			//if (who != 0 && cli0_packet->option == 4 && cli0_packet->option == 4) {
 			if (cli0_packet->option == 4 && cli1_packet->option == 4) {
 				if (cli0_packet->gbb != cli1_packet->gbb) {
@@ -459,13 +457,13 @@ int main(int argc, char *argv[])
 						}
 						MJB_cnt++;
 					}
-					//¹¬Âîºü 5È¸ ¼öÇà
+					//ï¿½ï¿½ï¿½ï¿½ï¿½ 5È¸ ï¿½ï¿½ï¿½ï¿½
 					else {
 						MJB_cnt = 0;
 						int size1 = strlen(Res_Msg[0]);
 						int totalsize1 = sizeof(int) * 3 + size1;
 
-						// ¿¹¿Ü Ã³¸®¿¡ µû¸¥ client 0 option 0 Àü¼Û
+						// ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ client 0 option 0 ï¿½ï¿½ï¿½ï¿½
 						send_packet.option = 0;
 						send_packet.totalsize = totalsize1;
 						send_packet.size = size1;
@@ -480,7 +478,7 @@ int main(int argc, char *argv[])
 						size1 = strlen(Res_Msg[0]);
 						totalsize1 = sizeof(int) * 3 + size1;
 
-						// ¿¹¿Ü Ã³¸®¿¡ µû¸¥ client1 option 0 Àü¼Û
+						// ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ client1 option 0 ï¿½ï¿½ï¿½ï¿½
 						send_packet.option = 0;
 						send_packet.totalsize = totalsize1;
 						send_packet.size = size1;
@@ -507,7 +505,7 @@ int main(int argc, char *argv[])
 					int size1 = strlen(Result_Msg2[MJB(cli0_packet->gbb, cli1_packet->gbb, who)]);
 					int totalsize1 = sizeof(int) * 3 + size1;
 					
-					// ¹¬Âîºü °ÔÀÓ Á¾·á¿¡ µû¸¥ client 0 option 0 Àü¼Û
+					// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½á¿¡ ï¿½ï¿½ï¿½ï¿½ client 0 option 0 ï¿½ï¿½ï¿½ï¿½
 					send_packet.option = 0;
 					send_packet.totalsize = totalsize1;
 					send_packet.size = size1;
@@ -522,7 +520,7 @@ int main(int argc, char *argv[])
 					size1 = strlen(Result_Msg1[MJB(cli0_packet->gbb, cli1_packet->gbb, who)]);
 					totalsize1 = sizeof(int) * 3 + size1;
 					
-					// ¹¬Âîºü °ÔÀÓ Á¾·á¿¡ µû¸¥ client1 option 0 Àü¼Û
+					// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½á¿¡ ï¿½ï¿½ï¿½ï¿½ client1 option 0 ï¿½ï¿½ï¿½ï¿½
 					send_packet.option = 0;
 					send_packet.totalsize = totalsize1;
 					send_packet.size = size1;
@@ -534,29 +532,27 @@ int main(int argc, char *argv[])
 						break;
 					}
 
-					printf("client0 : %0.fÁ¡ , client1 : %0.fÁ¡\n", score_0, score_1);
+					printf("client0 : %0.fï¿½ï¿½ , client1 : %0.fï¿½ï¿½\n", score_0, score_1);
 				}
 			}
 		}
 
-		// ¼ÒÄÏ ´Ý±â (client0, client1)
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ý±ï¿½ (client0, client1)
 		closesocket(client_sock[0]);
-		printf("[TCP ¼­¹ö] Å¬¶óÀÌ¾ðÆ® Á¾·á: IP ÁÖ¼Ò=%s, Æ÷Æ® ¹øÈ£=%d\n",
+		printf("[TCP ï¿½ï¿½ï¿½ï¿½] Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½: IP ï¿½Ö¼ï¿½=%s, ï¿½ï¿½Æ® ï¿½ï¿½È£=%d\n",
 			addr, ntohs(clientaddr[0].sin_port));
 
 		closesocket(client_sock[1]);
-		printf("[TCP ¼­¹ö] Å¬¶óÀÌ¾ðÆ® Á¾·á: IP ÁÖ¼Ò=%s, Æ÷Æ® ¹øÈ£=%d\n",
+		printf("[TCP ï¿½ï¿½ï¿½ï¿½] Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½: IP ï¿½Ö¼ï¿½=%s, ï¿½ï¿½Æ® ï¿½ï¿½È£=%d\n",
 			addr, ntohs(clientaddr[1].sin_port));
 
 		error = 0;
 	}
 
-	// ¼ÒÄÏ ´Ý±â
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ý±ï¿½
 	closesocket(listen_sock);
-	//delete cli0_packet;
-	//delete cli1_packet;
 
-	// À©¼Ó Á¾·á
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	WSACleanup();
 	return 0;
 }
