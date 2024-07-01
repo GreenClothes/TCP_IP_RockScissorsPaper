@@ -6,12 +6,12 @@
 enum { NO_WIN = 0, FIRST_WIN = 1, SECOND_WIN = 2 };
 enum { GAWI = 0, BAWI = 1, BO = 2 };
 
-const char* Result_Msg[] = { "�����ϴ�!", "����!", "����!" };
-const char* Result_Msg1[] = { "���", "�̰���ϴ�!", "�����ϴ�!" };
-const char* Result_Msg2[] = { "���", "�����ϴ�!", "�̰���ϴ�!" };
-const char* END_Msg[] = { "�����߽��ϴ�!" };
+const char* Result_Msg[] = { "비겼습니다!", "공격!", "수비!" };
+const char* Result_Msg1[] = { "비겼", "이겼습니다!", "졌습니다!" };
+const char* Result_Msg2[] = { "비겼", "졌습니다!", "이겼습니다!" };
+const char* END_Msg[] = { "종료했습니다!" };
 const char* winner[] = { " ", "client1", "client0" };
-const char* Res_Msg[] = { "���� ��ȿ! "};
+const char* Res_Msg[] = { "게임 무효! "};
 
 float score_0 = 0;
 float score_1 = 0;
@@ -20,17 +20,17 @@ int who;
 int gbb_cnt = 0;
 int MJB_cnt = 0;
 
-// ���� ���� �ܰ� Ȯ�� ����
+// 게임 시작 단계 확인 변수
 int error = 0;
 
-// ��Ŷ ����
+// 패킷 구조
 #pragma pack(1)
 typedef struct _PACKET
 {
 	int size;
 	int totalsize;
 	// option
-	// 1 : ���� ����, 2 : �·�, 3 : ���� ����
+	// 1 : 게임 시작, 2 : 승률, 3 : 게임 종료
 	int option;
 	int gbb;
 	char data[15];
@@ -67,7 +67,7 @@ int MJB(int part1, int part2, int who_atk)
 	}
 }
 
-// ���� ������ �Լ�
+// 내부 구현용 함수
 int _recv_ahead(SOCKET s, char *p)
 {
 	__declspec(thread) static int nbytes = 0;
@@ -89,7 +89,7 @@ int _recv_ahead(SOCKET s, char *p)
 	return 1;
 }
 
-// ����� ���� ������ ���� �Լ�
+// 사용자 정의 데이터 수신 함수
 int recvn(SOCKET s, char* buf, int len, int flags)
 {
 	int received;
@@ -113,12 +113,12 @@ int main(int argc, char *argv[])
 {
 	int retval;
 
-	// ���� �ʱ�ȭ
+	// 윈속 초기화
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
 
-	// ���� ����
+	// 소켓 생성
 	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (listen_sock == INVALID_SOCKET) err_quit("socket()");
 
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR) err_quit("listen()");
 
-	// ������ ��ſ� ����� ����
+	// 데이터 통신에 사용할 변수
 	SOCKET client_sock[2];
 	SOCKADDR_IN clientaddr[2];
 	int addrlen;
@@ -143,6 +143,8 @@ int main(int argc, char *argv[])
 	PACKET send_packet;
 	PACKET cli0_packet_cache;
 	PACKET cli1_packet_cache;
+	//PACKET* cli0_packet = new PACKET();
+	//PACKET* cli1_packet = new PACKET();
 	PACKET* cli0_packet;
 	PACKET* cli1_packet;
 
@@ -156,10 +158,10 @@ int main(int argc, char *argv[])
 			break;
 		}
 
-		// ������ Ŭ���̾�Ʈ ���� ���
+		// 접속한 클라이언트 정보 출력
 		char addr[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &clientaddr[0].sin_addr, addr, sizeof(addr));
-		printf("\n[TCP ����] Ŭ���̾�Ʈ ����: IP �ּ�=%s, ��Ʈ ��ȣ=%d\n",
+		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
 			addr, ntohs(clientaddr[0].sin_port));
 
 		// client 1
@@ -171,12 +173,12 @@ int main(int argc, char *argv[])
 			break;
 		}
 
-		// ������ Ŭ���̾�Ʈ ���� ���
+		// 접속한 클라이언트 정보 출력
 		inet_ntop(AF_INET, &clientaddr[1].sin_addr, addr, sizeof(addr));
-		printf("\n[TCP ����] Ŭ���̾�Ʈ ����: IP �ּ�=%s, ��Ʈ ��ȣ=%d\n",
+		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
 			addr, ntohs(clientaddr[1].sin_port));
 
-		// ���� ���� ��û Ȯ��
+		// 게임 시작 요청 확인
 		retval = recv(client_sock[0], (char*)&cli0_packet_cache, sizeof(PACKET), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("recv()");
@@ -191,7 +193,7 @@ int main(int argc, char *argv[])
 		}
 		cli1_packet = (PACKET*)&cli1_packet_cache;
 
-		// �ɼ��� 1�̸� ���� ���� ��û ����
+		// 옵션이 1이면 게임 시작 요청 승인
 		if((cli0_packet->option == 1) && (cli1_packet->option == 1)){
 			send_packet.size = 0;
 			send_packet.size = sizeof(int) * 3 + send_packet.size;
@@ -203,7 +205,7 @@ int main(int argc, char *argv[])
 				error = 1;
 			}
 
-			// ���εǾ����� �˸�
+			// 승인되었음을 알림
 			send_packet.size = 0;
 			send_packet.size = sizeof(int) * 3 + send_packet.size;
 			send_packet.option = 1;
@@ -214,14 +216,14 @@ int main(int argc, char *argv[])
 				error = 1;
 			}
 		}
-		// �ϳ��� �ɼ��� 1�� �ƴϸ� ��� ����
+		// 하나라도 옵션이 1이 아니면 통신 종료
 		else {
 			error = 1;
 		}
 
-		// Ŭ���̾�Ʈ�� ������ ���
+		// 클라이언트와 데이터 통신
 		while (error == 0) {
-			// Ŭ���̾�Ʈ 0 ������ ����
+			// 클라이언트 0 데이터 수신
 			retval = recv(client_sock[0], (char*)&cli0_packet_cache, sizeof(PACKET), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
@@ -229,7 +231,7 @@ int main(int argc, char *argv[])
 			}
 			cli0_packet = (PACKET*)&cli0_packet_cache;
 
-			// Ŭ���̾�Ʈ 1 ������ ����
+			// 클라이언트 1 데이터 수신
 			retval = recv(client_sock[1], (char*)&cli1_packet_cache, sizeof(PACKET), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
@@ -238,7 +240,7 @@ int main(int argc, char *argv[])
 			cli1_packet = (PACKET*)&cli1_packet_cache;
 
 			//////////////////
-			// �·� ���
+			// 승률 계산
 			float a;
 			float b;
 			char win_rate[10];
@@ -261,7 +263,7 @@ int main(int argc, char *argv[])
 			}
 
 			/////////////////////////
-			// �·� ���� option == 2
+			// 승률 전송 option == 2
 			while(cli0_packet->option == 2) {
 				sprintf(win_rate, "%.2f", a);
 				int size = strlen((char*)&win_rate);
@@ -279,7 +281,7 @@ int main(int argc, char *argv[])
 					break;
 				}
 
-				// �����
+				// 재수신
 				retval = recv(client_sock[0], (char*)&cli0_packet_cache, sizeof(PACKET), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
@@ -304,7 +306,7 @@ int main(int argc, char *argv[])
 					break;
 				}
 
-				//�����
+				//재수신
 				retval = recv(client_sock[1], (char*)&cli1_packet_cache, sizeof(PACKET), 0);
 				if (retval == SOCKET_ERROR) {
 					err_display("recv()");
@@ -314,7 +316,7 @@ int main(int argc, char *argv[])
 			}
 
 			//////////////////////////////////////
-			//cli0 or cli1 ���� ���� option == 3
+			//cli0 or cli1 종료 명령 option == 3
 			if (cli0_packet->option == 3 || cli1_packet->option == 3) {
 				sprintf(win_rate, "%.2f", a);
 				int size = strlen((char*)&win_rate);
@@ -349,12 +351,12 @@ int main(int argc, char *argv[])
 			}
 
 			/////////////////////////////
-			// ���������� ���� option == 0
+			// 가위바위보 게임 option == 0
 			if(cli0_packet->option == 0 && cli1_packet->option == 0){
 				int size = strlen(Result_Msg[who_win(cli0_packet->gbb, cli1_packet->gbb)]);
 				int totalsize = sizeof(int) * 3 + cli0_packet->size;
 				
-				// ���������� ����� ���� option ����
+				// 가위바위보 결과에 따라 option 결정
 				if (who_win(cli0_packet->gbb, cli1_packet->gbb) == 0) {
 					send_packet.option = 0;
 					gbb_cnt++;
@@ -388,12 +390,12 @@ int main(int argc, char *argv[])
 						break;
 					}
 				}
-				// ���������� 5ȸ ����
+				// 가위바위보 5회 수행
 				else {
 					int size1 = strlen(Res_Msg[0]);
 					int totalsize1 = sizeof(int) * 3 + size1;
 
-					// ���� ó���� ���� client 0 option 0 ����
+					// 예외 처리에 따른 client 0 option 0 전송
 					send_packet.option = 0;
 					send_packet.totalsize = totalsize1;
 					send_packet.size = size1;
@@ -408,7 +410,7 @@ int main(int argc, char *argv[])
 					size1 = strlen(Res_Msg[0]);
 					totalsize1 = sizeof(int) * 3 + size1;
 
-					// ���� ó���� ���� client1 option 0 ����
+					// 예외 처리에 따른 client1 option 0 전송
 					send_packet.option = 0;
 					send_packet.totalsize = totalsize1;
 					send_packet.size = size1;
@@ -423,7 +425,7 @@ int main(int argc, char *argv[])
 			}
 
 			/////////////////////////////
-			// ����� ���� option == 4
+			// 묵찌빠 게임 option == 4
 			//if (who != 0 && cli0_packet->option == 4 && cli0_packet->option == 4) {
 			if (cli0_packet->option == 4 && cli1_packet->option == 4) {
 				if (cli0_packet->gbb != cli1_packet->gbb) {
@@ -457,13 +459,13 @@ int main(int argc, char *argv[])
 						}
 						MJB_cnt++;
 					}
-					//����� 5ȸ ����
+					//묵찌빠 5회 수행
 					else {
 						MJB_cnt = 0;
 						int size1 = strlen(Res_Msg[0]);
 						int totalsize1 = sizeof(int) * 3 + size1;
 
-						// ���� ó���� ���� client 0 option 0 ����
+						// 예외 처리에 따른 client 0 option 0 전송
 						send_packet.option = 0;
 						send_packet.totalsize = totalsize1;
 						send_packet.size = size1;
@@ -478,7 +480,7 @@ int main(int argc, char *argv[])
 						size1 = strlen(Res_Msg[0]);
 						totalsize1 = sizeof(int) * 3 + size1;
 
-						// ���� ó���� ���� client1 option 0 ����
+						// 예외 처리에 따른 client1 option 0 전송
 						send_packet.option = 0;
 						send_packet.totalsize = totalsize1;
 						send_packet.size = size1;
@@ -505,7 +507,7 @@ int main(int argc, char *argv[])
 					int size1 = strlen(Result_Msg2[MJB(cli0_packet->gbb, cli1_packet->gbb, who)]);
 					int totalsize1 = sizeof(int) * 3 + size1;
 					
-					// ����� ���� ���ῡ ���� client 0 option 0 ����
+					// 묵찌빠 게임 종료에 따른 client 0 option 0 전송
 					send_packet.option = 0;
 					send_packet.totalsize = totalsize1;
 					send_packet.size = size1;
@@ -520,7 +522,7 @@ int main(int argc, char *argv[])
 					size1 = strlen(Result_Msg1[MJB(cli0_packet->gbb, cli1_packet->gbb, who)]);
 					totalsize1 = sizeof(int) * 3 + size1;
 					
-					// ����� ���� ���ῡ ���� client1 option 0 ����
+					// 묵찌빠 게임 종료에 따른 client1 option 0 전송
 					send_packet.option = 0;
 					send_packet.totalsize = totalsize1;
 					send_packet.size = size1;
@@ -532,27 +534,29 @@ int main(int argc, char *argv[])
 						break;
 					}
 
-					printf("client0 : %0.f�� , client1 : %0.f��\n", score_0, score_1);
+					printf("client0 : %0.f점 , client1 : %0.f점\n", score_0, score_1);
 				}
 			}
 		}
 
-		// ���� �ݱ� (client0, client1)
+		// 소켓 닫기 (client0, client1)
 		closesocket(client_sock[0]);
-		printf("[TCP ����] Ŭ���̾�Ʈ ����: IP �ּ�=%s, ��Ʈ ��ȣ=%d\n",
+		printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 			addr, ntohs(clientaddr[0].sin_port));
 
 		closesocket(client_sock[1]);
-		printf("[TCP ����] Ŭ���̾�Ʈ ����: IP �ּ�=%s, ��Ʈ ��ȣ=%d\n",
+		printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 			addr, ntohs(clientaddr[1].sin_port));
 
 		error = 0;
 	}
 
-	// ���� �ݱ�
+	// 소켓 닫기
 	closesocket(listen_sock);
+	//delete cli0_packet;
+	//delete cli1_packet;
 
-	// ���� ����
+	// 윈속 종료
 	WSACleanup();
 	return 0;
 }

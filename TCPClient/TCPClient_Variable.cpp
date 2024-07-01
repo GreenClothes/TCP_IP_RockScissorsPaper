@@ -1,15 +1,16 @@
 #include "Common.h"
 
-char *SERVERIP = (char *)"192.168.0.17";
+char *SERVERIP = (char *)"SERVER IP";
 #define SERVERPORT 9000
 #define BUFSIZE    50
 
 enum { NO_WIN = 0, FIRST_WIN = 1, SECOND_WIN = 2 };
 enum { GAWI = 0, BAWI = 1, BO = 2 };
 
+// ê²Œì„ ì‹œì‘ ë‹¨ê³„ í™•ì¸ ë³€ìˆ˜
 int error = 0;
 
-// packet struct
+// íŒ¨í‚· êµ¬ì¡°
 #pragma pack(1)
 typedef struct _PACKET
 {
@@ -22,7 +23,7 @@ typedef struct _PACKET
 #pragma pack()
 
 // Internet Inference
-// user defined data receiving function
+// ì‚¬ìš©ì ì •ì˜ ë°ì´í„° ìˆ˜ì‹  í•¨ìˆ˜
 int recvn(SOCKET s, char* buf, int len, int flags)
 {
 	int received;
@@ -46,15 +47,15 @@ int main(int argc, char *argv[])
 {
 	int retval;
 
-	// use command line argument as IP address
+	// ëª…ë ¹í–‰ ì¸ìˆ˜ê°€ ìˆìœ¼ë©´ IP ì£¼ì†Œë¡œ ì‚¬ìš©
 	if (argc > 1) SERVERIP = argv[1];
 
-	// initialize winsock
+	// ìœˆì† ì´ˆê¸°í™”
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
 
-	// create socket
+	// ì†Œì¼“ ìƒì„±
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
@@ -78,7 +79,7 @@ int main(int argc, char *argv[])
 	PACKET rs_PACKET1;
 	PACKET* rs_PACKET2;
 
-	// request for starting game
+	// ê²Œì„ ì‹œì‘ ìš”ì²­
 	send_packet.option = 1;
 
 	retval = send(sock, (char*)&send_packet, sizeof(send_packet), 0);
@@ -87,7 +88,7 @@ int main(int argc, char *argv[])
 		error = 1;
 	}
 
-	// receive acceptance of request for starting game
+	// ê²Œì„ ì‹œì‘ ìš”ì²­ ìŠ¹ì¸ ìˆ˜ì‹ 
 	retval = recv(sock, (char*)&rs_PACKET1, sizeof(PACKET), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
@@ -96,21 +97,21 @@ int main(int argc, char *argv[])
 
 	rs_PACKET2 = (PACKET*)&rs_PACKET1;
 
-	// if not accepted, can not connect
+	// ìŠ¹ì¸ë˜ì§€ ì•Šìœ¼ë©´ ì—°ê²° X
 	if (rs_PACKET2->option != 1) {
 		error = 1;
 	}
 
-	// communication with server
+	// ì„œë²„ì™€ ë°ì´í„° í†µì‹ 
 	while (error == 0) {
 		int gbb;
-		printf("°¡À§ ¹ÙÀ§ º¸, ¹¬Âîºü °ÔÀÓ!!\n");
-		printf("º¸±â¿¡¼­ ¼±ÅÃÇÏ¼¼¿ä!(°¡À§=0 ¹ÙÀ§=1 º¸=2 ½Â·üÈ®ÀÎ=3 °ÔÀÓ Á¾·á=4)\n");
+		printf("ê°€ìœ„ ë°”ìœ„ ë³´, ë¬µì°Œë¹  ê²Œì„!!\n");
+		printf("ë³´ê¸°ì—ì„œ ì„ íƒí•˜ì„¸ìš”!(ê°€ìœ„=0 ë°”ìœ„=1 ë³´=2 ìŠ¹ë¥ í™•ì¸=3 ê²Œì„ ì¢…ë£Œ=4)\n");
 		scanf_s("%d", &gbb);
 		while (gbb < 0 || gbb>4)
 		{
-			printf("Àß¸øÀÔ·ÂÇÏ¼Ì½À´Ï´Ù.\n");
-			printf("º¸±â¿¡¼­ ¼±ÅÃÇÏ¼¼¿ä!(°¡À§=0 ¹ÙÀ§=1 º¸=2 ½Â·üÈ®ÀÎ=3 °ÔÀÓ Á¾·á=4)\n");
+			printf("ì˜ëª»ì…ë ¥í•˜ì…¨ìŠµë‹ˆë‹¤.\n");
+			printf("ë³´ê¸°ì—ì„œ ì„ íƒí•˜ì„¸ìš”!(ê°€ìœ„=0 ë°”ìœ„=1 ë³´=2 ìŠ¹ë¥ í™•ì¸=3 ê²Œì„ ì¢…ë£Œ=4)\n");
 			scanf_s("%d", &gbb);
 		}
 
@@ -129,14 +130,14 @@ int main(int argc, char *argv[])
 		send_packet.size = sizeof(int);
 		send_packet.totalsize = sizeof(int) * 3;
 
-		// send data
+		// ë°ì´í„° ë³´ë‚´ê¸°
 		retval = send(sock, (char*)&send_packet, sizeof(send_packet), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("send()");
 			break;
 		}
 
-		// receive data
+		// ë°ì´í„° ë°›ê¸°
 		retval = recv(sock, (char*)&rs_PACKET1, sizeof(PACKET), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("recv()");
@@ -145,16 +146,16 @@ int main(int argc, char *argv[])
 
 		rs_PACKET2 = (PACKET*)&rs_PACKET1;
 
-		// print result
+		// ê²°ê³¼ ì¶œë ¥
 		if (rs_PACKET2->option == 0 || rs_PACKET2->option == 4) {
 			printf("%s\n", rs_PACKET2->data);
 			option_cache = rs_PACKET2->option;
 		}
 		else if (rs_PACKET2->option == 2) {
-			printf("½Â·ü : %s %%\n", rs_PACKET2->data);
+			printf("ìŠ¹ë¥  : %s %%\n", rs_PACKET2->data);
 		}
 		else if (rs_PACKET2->option == 3) {
-			printf("½Â·ü : %s %%\n", rs_PACKET2->data);
+			printf("ìŠ¹ë¥  : %s %%\n", rs_PACKET2->data);
 			break;
 		}
 
@@ -166,7 +167,7 @@ int main(int argc, char *argv[])
 	// quit winsock
 	WSACleanup();
 	char ch;
-	printf("°ÔÀÓÀÌ Á¾·áµÇ¾ú½À´Ï´Ù...\n(Press Enter to closing...)\n");
+	printf("ê²Œì„ì´ ì¢…ë£Œë˜ì—ˆìŠµë‹ˆë‹¤...\n(Press Enter to closing...)\n");
 	std::cin.get(ch);
 	return 0;
 }
